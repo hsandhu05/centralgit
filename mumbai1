@@ -1,3 +1,32 @@
-How it is going harman with Devops
-I am not regular at class. 
-So it will take time to complete the course
+from pyad import *
+from pyad.adquery import ADQuery
+
+# Set the credentials for connecting to Active Directory
+pyad.set_defaults(ldap_server="your_ldap_server", username="your_username", password="your_password")
+
+# Define the user attributes
+user_attributes = {
+    "cn": "John Doe",        # Common Name
+    "sAMAccountName": "jdoe",  # User's logon name
+    "userPrincipalName": "jdoe@your_domain.com",
+    "givenName": "John",
+    "sn": "Doe",
+    "displayName": "John Doe",
+    "description": "New AD User",
+    "userPassword": "P@ssw0rd",  # Password (you should set a secure password)
+    "memberOf": ["CN=Users,DC=your_domain,DC=com"],  # User's group memberships
+    "homeDirectory": "\\path\\to\\user\\home\\directory",
+    "scriptPath": "logon_script.bat",  # Logon script if needed
+}
+
+# Create a new user
+new_user = pyad.aduser.ADUser.create(**user_attributes)
+
+# Check if the user was created successfully
+if new_user.is_enabled():
+    print(f"User '{new_user.get_attribute('sAMAccountName')}' created successfully.")
+else:
+    print(f"Failed to create user '{new_user.get_attribute('sAMAccountName')}'.")
+
+# Clean up the Active Directory connection
+pyad.adbase.ADObject.unbind_all()
